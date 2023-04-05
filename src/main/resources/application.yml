@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          eve:
+            client-name: eve
+            client-id: ${eve-assist-sso-client} #  https://developers.eveonline.com/
+            client-secret: ${eve-assist-sso-secret} #  https://developers.eveonline.com/
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/eve # https://developers.eveonline.com/
+          #            scope: publicData
+          bael:
+            client-name: bael
+            client-id: fooClientIdPassword
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/bael
+        provider:
+          eve:
+            authorization-uri: https://login.eveonline.com/v2/oauth/authorize
+            token-uri: https://login.eveonline.com/v2/oauth/token
+            user-info-uri: https://login.eveonline.com/oauth/verify
+            user-name-attribute: CharacterName
+          bael:
+            token-uri: http://localhost:8081/spring-security-oauth-server/oauth/token
+            authorization-uri: http://localhost:8081/spring-security-oauth-server/oauth/authorize
+            user-info-uri: http://localhost:8082/spring-security-oauth-resource/users/extra
+            user-name-attribute: user_name
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://login.eveonline.com/oauth/jwks
+          issuer-uri: https://login.eveonline.com
+
+logging:
+  level:
+    reactor.netty.http.client: debug
+    com.eveassist.oauth.config: debug
