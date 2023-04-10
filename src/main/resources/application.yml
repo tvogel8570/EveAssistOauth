@@ -6,6 +6,17 @@ server:
 
 
 spring:
+  datasource:
+    username: postgres
+    password: o2bB6lV2M0Rg
+    url: jdbc:postgresql://localhost:5432/eve_assist_user
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      jdbc.timezone: UTC
+  flyway:
+    enabled: true
   security:
     oauth2:
       client:
@@ -41,5 +52,6 @@ spring:
 
 logging:
   level:
+    root: info
     reactor.netty.http.client: debug
     com.eveassist.oauth.config: debug
