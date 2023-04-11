@@ -1,6 +1,5 @@
 package com.eveassist.oauth.user;
 
-import com.eveassist.oauth.user.dto.EveAssistUserDto;
 import com.eveassist.oauth.user.dto.EveAssistUserListDto;
 import com.eveassist.oauth.user.entity.EveAssistUser;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +12,9 @@ public interface EveAssistUserRepository extends JpaRepository<EveAssistUser, Lo
 
 	EveAssistUser findByUniqueUser(String uniqueUser);
 
-	@Query("select e from EveAssistUser e")
-	List<EveAssistUserListDto> getUserList();
+	@Query("select new com.eveassist.oauth.user.dto.EveAssistUserListDto(e.uniqueUser, e.email, e.screenName) from EveAssistUser e")
+	List<EveAssistUserListDto> getAllUsersList();
 
-	@Query("select e from EveAssistUser e where e.email = ?1")
-	EveAssistUserDto findUserDto(String email);
+	@Query("select new com.eveassist.oauth.user.dto.EveAssistUserListDto(e.uniqueUser, e.email, e.screenName) from EveAssistUser e")
+	EveAssistUserListDto getUserList();
 }

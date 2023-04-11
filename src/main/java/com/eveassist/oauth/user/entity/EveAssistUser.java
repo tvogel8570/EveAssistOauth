@@ -4,6 +4,9 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -13,7 +16,9 @@ import javax.validation.constraints.PastOrPresent;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -21,12 +26,12 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "EveAssistUser", uniqueConstraints = {
+@Table(name = "eve_assist_user", uniqueConstraints = {
 		@UniqueConstraint(name = "uc_eveassistuser_unique_user", columnNames = { "unique_user" }),
 		@UniqueConstraint(name = "uc_eveassistuser_email", columnNames = { "email" }),
 		@UniqueConstraint(name = "uc_eveassistuser_screen_name", columnNames = { "screen_name" })
 })
-public class EveAssistUser implements Serializable {
+public class EveAssistUser implements Serializable, UserDetails {
 	@Serial
 	private static final long serialVersionUID = 4756246154027625809L;
 	@Id
@@ -55,6 +60,14 @@ public class EveAssistUser implements Serializable {
 	@NotNull
 	@Column(name = "update_timestamp", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
 	private LocalDateTime updateTimestamp;
+	@Column
+	boolean accountNonExpired;
+	@Column
+	boolean accountNonLocked;
+	@Column
+	boolean credentialsNonExpired;
+	@Column
+	boolean enabled;
 
 	@Override
 	public boolean equals(Object o) {
@@ -69,5 +82,37 @@ public class EveAssistUser implements Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(uniqueUser);
+	}
+
+	// TODO hardcoded to have USER
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		GrantedAuthority authority = new SimpleGrantedAuthority("USER");
+		return Set.of(authority);
+	}
+
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return false;
 	}
 }

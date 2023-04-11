@@ -1,6 +1,5 @@
 package com.eveassist.oauth.user;
 
-import com.eveassist.oauth.user.dto.EveAssistUserDto;
 import com.eveassist.oauth.user.dto.EveAssistUserListDto;
 import com.eveassist.oauth.user.entity.EveAssistUser;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +61,7 @@ class EveAssistUserRepositoryTest {
 	}
 
 	@Test
-	void shouldReturnListOfInterface() {
+	void shouldReturnListOfAllUsers() {
 		LocalDateTime testTime = LocalDateTime.now();
 		EveAssistUser eveAssistUser = EveAssistUser.builder()
 				.uniqueUser("123456789012345678901234567890")
@@ -70,19 +69,17 @@ class EveAssistUserRepositoryTest {
 				.createTimestamp(testTime)
 				.updateTimestamp(testTime)
 				.email("tim@test.com").build();
-		EveAssistUser retrievedUser = testEntityManager.persistAndFlush(eveAssistUser);
-		assertThat(retrievedUser).isNotNull();
+		testEntityManager.persistAndFlush(eveAssistUser);
 		eveAssistUser = EveAssistUser.builder()
 				.uniqueUser("123456789012345678901234567891")
 				.screenName("me1")
 				.createTimestamp(testTime)
 				.updateTimestamp(testTime)
 				.email("tim1@test.com").build();
-		retrievedUser = testEntityManager.persistAndFlush(eveAssistUser);
-		assertThat(retrievedUser).isNotNull();
-		List<EveAssistUserListDto> userList = repository.getUserList();
-		assertThat(userList).isNotNull();
-		assertThat(userList.size()).isEqualTo(2);
+		testEntityManager.persistAndFlush(eveAssistUser);
+		List<EveAssistUserListDto> allUserInfo = repository.getAllUsersList();
+		assertThat(allUserInfo).isNotNull();
+		assertThat(allUserInfo.size()).isEqualTo(2);
 	}
 
 	@Test
@@ -95,9 +92,9 @@ class EveAssistUserRepositoryTest {
 				.updateTimestamp(testTime)
 				.email("tim@test.com").build();
 		EveAssistUser retrievedUser = testEntityManager.persistFlushFind(eveAssistUser);
-		EveAssistUserDto userDto = repository.findUserDto("tim@test.com");
-		assertThat(userDto).isNotNull();
-		assertThat(retrievedUser.getEmail()).isEqualTo(userDto.getEmail());
+		EveAssistUserListDto userInfo = repository.getUserList();
+		assertThat(userInfo).isNotNull();
+		assertThat(retrievedUser.getEmail()).isEqualTo(userInfo.getEmail());
 	}
 
 	@Test
@@ -109,8 +106,14 @@ class EveAssistUserRepositoryTest {
 				.createTimestamp(testTime)
 				.updateTimestamp(testTime)
 				.email("tim@test.com").build();
-		EveAssistUser retrievedUser = testEntityManager.persistAndFlush(eveAssistUser);
+		testEntityManager.persistAndFlush(eveAssistUser);
 		EveAssistUser user = repository.findByEmailIgnoreCase("TIM@TEST.com");
 		assertThat(user).isNotNull();
+	}
+
+	@Test
+	void shouldThrowUserNotFoundException_whenSearchForEmailFails() {
+		EveAssistUser missingUser = repository.findByEmailIgnoreCase("asdf@asdf.com");
+		assertThat(missingUser).isNull();
 	}
 }
