@@ -2,19 +2,19 @@ package com.eveassist.oauth.user;
 
 import com.eveassist.oauth.user.dto.EveAssistUserListDto;
 import com.eveassist.oauth.user.entity.EveAssistUser;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.List;
 
-public interface EveAssistUserRepository extends JpaRepository<EveAssistUser, Long> {
+public interface EveAssistUserRepository extends ReactiveCrudRepository<EveAssistUser, Long> {
 	EveAssistUser findByEmailIgnoreCase(String email);
 
 	EveAssistUser findByUniqueUser(String uniqueUser);
 
-	@Query("select new com.eveassist.oauth.user.dto.EveAssistUserListDto(e.uniqueUser, e.email, e.screenName) from EveAssistUser e")
+	@Query("select e.unique_user, e.email, e.screen_name from eve_assist_user e")
 	List<EveAssistUserListDto> getAllUsersList();
 
-	@Query("select new com.eveassist.oauth.user.dto.EveAssistUserListDto(e.uniqueUser, e.email, e.screenName) from EveAssistUser e")
+	@Query("select e.unique_user, e.email, e.screen_name from eve_assist_user e")
 	EveAssistUserListDto getUserList();
 }

@@ -4,19 +4,16 @@ server:
     whitelabel:
       enabled: false
 
-
 spring:
-  datasource:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432
     username: postgres
     password: o2bB6lV2M0Rg
-    url: jdbc:postgresql://localhost:5432/eve_assist_user
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    properties:
-      jdbc.timezone: UTC
+    name: eve_assist_user
   flyway:
     enabled: true
+    url: jdbc:postgresql://localhost:5432/eve_assist_user
+    locations: classpath:db/migration
   security:
     oauth2:
       client:
