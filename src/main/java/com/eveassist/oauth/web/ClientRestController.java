@@ -1,9 +1,10 @@
 package com.eveassist.oauth.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,17 +17,25 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 public class ClientRestController {
 
 	private static String RESOURCE_URI = "https://esi.evetech.net/latest/%s/?datasource=tranquility";
-
-	@Autowired
-	WebClient webClient;
-
-	@Autowired
+	private final WebClient webClient;
 	@Qualifier("otherWebClient")
-	WebClient otherWebClient;
+	private final WebClient otherWebClient;
+
+	public ClientRestController(WebClient webClient, WebClient otherWebClient) {
+		this.webClient = webClient;
+		this.otherWebClient = otherWebClient;
+	}
+
+	//	@GetMapping("/")
+	//	Mono<String> homePage() {
+	//		return Mono.just("Success");
+	//	}
 
 	@GetMapping("/")
-	Mono<String> homePage() {
-		return Mono.just("Success");
+	public Mono<String> index(@AuthenticationPrincipal Mono<OAuth2User> oauth2User) {
+		return oauth2User
+				.map(OAuth2User::getName)
+				.map(name -> String.format("Hi, %s", name));
 	}
 
 	@GetMapping("/eve/public-info")

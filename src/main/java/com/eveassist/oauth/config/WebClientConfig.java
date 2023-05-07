@@ -55,4 +55,5 @@ public class WebClientConfig {
 				.filter(oauth)
 				.build();
 	}
+
 }
