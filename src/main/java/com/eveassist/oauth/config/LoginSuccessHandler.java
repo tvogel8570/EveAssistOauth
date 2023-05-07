@@ -5,13 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.server.WebFilterExchange;
-import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-public class LoginSuccessHandler implements ServerAuthenticationSuccessHandler {
+public class LoginSuccessHandler extends RedirectServerAuthenticationSuccessHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LoginSuccessHandler.class);
 
 	@Override
@@ -19,7 +18,6 @@ public class LoginSuccessHandler implements ServerAuthenticationSuccessHandler {
 		DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
 		logger.info(principal.getName());
 
-		ServerWebExchange exchange = webFilterExchange.getExchange();
-		return webFilterExchange.getChain().filter(exchange);
+		return super.onAuthenticationSuccess(webFilterExchange, authentication);
 	}
 }
