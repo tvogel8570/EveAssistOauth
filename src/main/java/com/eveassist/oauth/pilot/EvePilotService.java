@@ -32,7 +32,7 @@ public class EvePilotService {
 					.retrieve()
 					.bodyToMono(Characters.class)
 					.filter(characters -> characters.characters().stream()
-							.anyMatch(character -> character.name().equals(name)))
+							.anyMatch(character -> character.name().equalsIgnoreCase(name)))
 					.map(characters -> characters.characters().get(0).id())
 					.defaultIfEmpty(-1L);
 		} catch (JsonProcessingException e) {
