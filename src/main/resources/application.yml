@@ -50,5 +50,5 @@ spring:
 logging:
   level:
     root: info
-    reactor.netty.http.client: debug
+    #    reactor.netty.http.client: debug
     com.eveassist.oauth.config: debug
