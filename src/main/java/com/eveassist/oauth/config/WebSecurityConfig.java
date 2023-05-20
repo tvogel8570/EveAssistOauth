@@ -21,9 +21,15 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 		http.authorizeExchange()
+
 				.anyExchange()
 				.authenticated()
 				.and()
+				//				.cors().disable()
+				//				.logout().disable()
+				//				.formLogin().disable()
+				//				.csrf().disable()
+				//				.httpBasic().disable()
 				//				.oauth2Login(Customizer.withDefaults())
 				.oauth2Login()
 				.authenticationSuccessHandler(loginSuccessHandler)
@@ -34,7 +40,7 @@ public class WebSecurityConfig {
 		return http.build();
 	}
 
-	//	@Bean
+	@Bean
 	public ReactiveOAuth2AuthorizedClientService dbOauth2AuthorizedClientService(DatabaseClient databaseClient,
 			ReactiveClientRegistrationRepository clientRegistrationRepository) {
 		return new R2dbcReactiveOAuth2AuthorizedClientService(databaseClient, clientRegistrationRepository);
