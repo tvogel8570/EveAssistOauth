@@ -22,12 +22,12 @@ public class WebClientConfig {
 			ServerOAuth2AuthorizedClientRepository authorizedClients) {
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
 				clientRegistrations, authorizedClients);
-		oauth.setDefaultOAuth2AuthorizedClient(true);
+		//		oauth.setDefaultOAuth2AuthorizedClient(true);
 		return WebClient.builder()
 				//				.filter(oauth)
 				.filters(exchangeFilterFunctions -> {
 					exchangeFilterFunctions.add(oauth);
-					exchangeFilterFunctions.add(logRequest());
+					//					exchangeFilterFunctions.add(logRequest());
 				})
 				.build();
 	}
