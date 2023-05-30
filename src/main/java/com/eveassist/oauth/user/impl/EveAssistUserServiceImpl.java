@@ -24,9 +24,12 @@ public class EveAssistUserServiceImpl implements UserDetailsService, EveAssistUs
 	 * 		– if the user could not be found or the user has no GrantedAuthorities
 	 */
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+/*
 		EveAssistUser eveAssistUser = userRepository.findByEmailIgnoreCase(username);
 		if (eveAssistUser == null || eveAssistUser.getAuthorities().size() == 0)
 			throw new UsernameNotFoundException(String.format("user with email [%s] not found", username));
 		return eveAssistUser;
+*/
+		return new EveAssistUser();
 	}
 }
