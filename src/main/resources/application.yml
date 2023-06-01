@@ -3,6 +3,12 @@ server:
   error:
     whitelabel:
       enabled: false
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: src/main/resources/keystore/self_signed.p12
+    key-store-password: ${SERVER_SSL_KEY_PASSWORD}
+    key-alias: tim-asus
 
 spring:
   r2dbc:
@@ -23,8 +29,8 @@ spring:
             client-id: ${eve-assist-sso-client} #  https://developers.eveonline.com/
             client-secret: ${eve-assist-sso-secret} #  https://developers.eveonline.com/
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/eve # https://developers.eveonline.com/
-          #            scope: publicData
+            redirect-uri: https://localhost:8080/login/oauth2/code/eve # https://developers.eveonline.com/
+            scope: esi-characters.read_notifications.v1
         provider:
           eve:
             authorization-uri: https://login.eveonline.com/v2/oauth/authorize
