@@ -1,0 +1,31 @@
+services:
+  eve-postgres:
+    image: tvogel8570/eveassist:1.0
+    secrets:
+      - db-password
+    #    build:
+    #      context: ./postgres
+    #      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: postgres-eve-assist
+        target: /var/lib/postgresql/data
+    networks:
+      - eve-assist-network
+    environment:
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    container_name: eve-assist-postgres
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres-eve-assist:
+    name: postgres-eve-assist
+
+secrets:
+  db-password:
+    file: ./postgres/password.txt
+
+networks:
+  eve-assist-network:
+
