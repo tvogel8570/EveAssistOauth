@@ -35,3 +35,4 @@ build/
 /infrastructure/sample/
 /infrastructure/postgres/sql/backup/
 /infrastructure/postgres/password.txt
+/infrastructure/keycloak/*
