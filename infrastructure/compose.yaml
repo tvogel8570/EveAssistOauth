@@ -16,16 +16,68 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     container_name: eve-assist-postgres
     ports:
-      - "5432:5432"
+      - target: 5432
+        published: 5432
+        protocol: tcp
+        mode: host
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    command: [ " start-dev" ]
+    secrets:
+      - keycloak-admin-user
+      - keycloak-admin-password
+      - source: server_crt
+        target: /etc/x509/https/tls.crt
+        uid: '103'
+        gid: '103'
+        mode: 0440
+      - source: server_key
+        target: /etc/x509/https/tls.key
+        uid: '103'
+        gid: '103'
+        mode: 0440
+    volumes:
+      - type: volume
+        source: keycloak-eve-assist
+        target: /opt/keycloak/data
+    ports:
+      - target: 8443 # Keycloak HTTPS port
+        published: 8443
+        protocol: tcp
+        mode: host
+      - target: 8080 # Keycloak HTTP port
+        published: 8442
+        protocol: tcp
+        mode: host
+    networks:
+      - eve-assist-network
+    environment:
+      #      - KEYCLOAK_USER_FILE=/run/secrets/keycloak-admin-user
+      #      - KEYCLOAK_PASSWORD_FILE=/run/secrets/keycloak-admin-password
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin1
+      - KC_HTTPS_CERTIFICATE_FILE=/etc/x509/https/tls.crt
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/etc/x509/https/tls.key
+    container_name: eve-assist-keycloak
 
 volumes:
   postgres-eve-assist:
     name: postgres-eve-assist
+  keycloak-eve-assist:
+    name: keycloak-eve-assist
 
 secrets:
   db-password:
     file: ./postgres/password.txt
+  keycloak-admin-user:
+    file: ./keycloak/admin.txt
+  keycloak-admin-password:
+    file: ./keycloak/admin_password.txt
+  server_crt:
+    file: keycloak/self_signed.crt
+  server_key:
+    file: keycloak/self_signed_key.pem
 
 networks:
   eve-assist-network:
-
