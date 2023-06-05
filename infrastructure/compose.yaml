@@ -22,11 +22,9 @@ services:
         mode: host
 
   keycloak:
-    image: quay.io/keycloak/keycloak:21.1.1
-    command: [ " start-dev" ]
+    image: quay.io/keycloak/keycloak:latest
+    command: [ " --verbose start-dev" ]
     secrets:
-      - keycloak-admin-user
-      - keycloak-admin-password
       - source: server_crt
         target: /etc/x509/https/tls.crt
         uid: '103'
@@ -53,12 +51,8 @@ services:
     networks:
       - eve-assist-network
     environment:
-      #      - KEYCLOAK_USER_FILE=/run/secrets/keycloak-admin-user
-      #      - KEYCLOAK_PASSWORD_FILE=/run/secrets/keycloak-admin-password
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin1
-      - KC_HTTPS_CERTIFICATE_FILE=/etc/x509/https/tls.crt
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/etc/x509/https/tls.key
     container_name: eve-assist-keycloak
 
 volumes:
@@ -70,10 +64,6 @@ volumes:
 secrets:
   db-password:
     file: ./postgres/password.txt
-  keycloak-admin-user:
-    file: ./keycloak/admin.txt
-  keycloak-admin-password:
-    file: ./keycloak/admin_password.txt
   server_crt:
     file: keycloak/self_signed.crt
   server_key:
